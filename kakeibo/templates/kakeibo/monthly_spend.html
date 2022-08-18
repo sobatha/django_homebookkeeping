@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block main %}
+<header>
+<a href="{% url 'month' previous_year previous_month %}">前月</a>
+<a href="{% url 'month' next_year next_month %}">次月</a>
+<h2>{{ year }}年{{ month }}月の家計簿</h2>
+
+</header>
+
+<table class="striped">
+    <tr>
+      <th>日付</th>
+      <th>カテゴリ</th>
+      <th>金額</th>
+      <th>摘要</th>
+    </tr>
+    {% for payment in monthly_spendlist %}
+  
+    <tr>
+      <td>{{ payment.spend_date }}</td>
+      <td>{{ payment.get_spend_category_display }}</td>
+      <td>{{ payment.spend_money }}</td>
+      <td>
+        {{ payment.spend_memo }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endblock %}
