@@ -20,9 +20,8 @@ class Spend(models.Model):
         default='food',
     )
     spend_money = models.IntegerField(default=0)
-    spend_date = models.DateField(auto_now_add=True) 
+    spend_date = models.DateField(default=datetime.date.today) 
     spend_memo = models.TextField(max_length=200, blank=True)
-    spend_update = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.spend_category
