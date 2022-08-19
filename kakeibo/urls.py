@@ -6,5 +6,5 @@ urlpatterns = [
     path("<int:year>/<int:month>/", views.month, name='month'),
     path("<int:year>/", views.year, name="year"),
     path("stock/", views.stock, name='stock'),
-    path("forms/", views.forms, name='form'),
+    path("forms/", views.PaymentCreate.as_view(), name='payment_create'),
 ]

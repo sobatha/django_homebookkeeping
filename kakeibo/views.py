@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from django import forms
 from django.views import generic
 from .models import Spend
+from .forms import PaymentForm
 from django.urls import reverse
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
@@ -26,10 +28,10 @@ def month(request, year, month):
       'previous_month': previous_month, 'previous_year': previous_year,
       'next_month': next_month, 'next_year': next_year})
 
-    return HttpResponse('this is month')
-
 def stock(request):
     return HttpResponse('this is stock')
 
-def forms(request):
-    return render(request, 'kakeibo/form.html', {})
+class PaymentCreate(generic.CreateView):
+    template_name = 'kakeibo/form.html'
+    model = Spend
+    form_class = PaymentForm
