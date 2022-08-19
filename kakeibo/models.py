@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.utils import timezone
 import datetime
 
@@ -17,7 +18,7 @@ class Spend(models.Model):
     spend_category = models.CharField(
         max_length=20,
         choices=Spend_Categorys,
-        default='food',
+        default='food'
     )
     spend_money = models.IntegerField(default=0)
     spend_date = models.DateField(default=datetime.date.today) 
