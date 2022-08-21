@@ -16,9 +16,9 @@ class Spend(models.Model):
         ('special', '特別費・旅行費')
     ]
     spend_category = models.CharField(
-        max_length=20,
+        max_length=15,
         choices=Spend_Categorys,
-        default='food'
+        default='food',
     )
     spend_money = models.IntegerField(default=0)
     spend_date = models.DateField(default=datetime.date.today) 

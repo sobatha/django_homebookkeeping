@@ -1,15 +1,18 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.views import generic
 from .models import Spend
 from .forms import PaymentForm
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
 def index(request):
-    return HttpResponse('this is index')
+    today = datetime.now()
+    now_month = today.month
+    now_year = today.year
+    return render(request, 'kakeibo/index.html', {'year': now_year, 'month': now_month,})
 
 def year(request, year):
     return HttpResponse('this is year')
@@ -31,7 +34,33 @@ def month(request, year, month):
 def stock(request):
     return HttpResponse('this is stock')
 
-class PaymentCreate(generic.CreateView):
-    template_name = 'kakeibo/form.html'
-    model = Spend
-    form_class = PaymentForm
+def PaymentCreate(request):
+    if request.method == "POST":
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('payment_create')
+    else:
+        form = PaymentForm
+        title = "支出入力フォーム"
+        return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
+
+def payment_update(request, pk):
+    payment = get_object_or_404(Spend, pk=pk)
+    if request.method == "POST":
+        form = PaymentForm(request.POST, instance=payment)
+        if form.is_valid():
+            form.save()
+            return redirect('payment_create')
+    else:
+        form = PaymentForm(instance=payment)
+        title = "支出入力フォーム"
+        return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
+
+
+def payment_delete(request, pk):
+    payment = get_object_or_404(Spend, pk=pk)
+    month = payment.spend_date.month
+    year = payment.spend_date.year
+    payment.delete()
+    return redirect('index')
