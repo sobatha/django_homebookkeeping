@@ -51,7 +51,9 @@ def payment_update(request, pk):
         form = PaymentForm(request.POST, instance=payment)
         if form.is_valid():
             form.save()
-            return redirect('payment_create')
+            month = payment.spend_date.month
+            year = payment.spend_date.year
+            return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
     else:
         form = PaymentForm(instance=payment)
         title = "支出入力フォーム"
@@ -63,4 +65,5 @@ def payment_delete(request, pk):
     month = payment.spend_date.month
     year = payment.spend_date.year
     payment.delete()
-    return redirect('index')
+    #return render(request, 'kakeibo/test.html', {'year': year, 'month': month})
+    return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
