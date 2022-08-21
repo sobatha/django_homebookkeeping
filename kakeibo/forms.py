@@ -7,8 +7,10 @@ class PaymentForm(forms.ModelForm):
         model = Spend
         fields = ["spend_category", "spend_date", "spend_money", "spend_memo"]
         widgets = {
-            'spend_category': forms.Select(),
+             'spend_category': forms.Select(attrs={'style': 'display:initial'}),
         }
         templatename = 'forms.html'
+
+    
     
     

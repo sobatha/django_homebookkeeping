@@ -2,15 +2,29 @@
 {% block main %}
 
     <head>
-        <title>支出入力フォーム</title>
+        <title>入力フォーム</title>
     </head>
     <body>
         <div>
+        <h3>{{ title }}</h3>
+        </div>
+        <div>
             <form action="" method="POST">{% csrf_token %}
                 {{ form.as_p }}
-            <button class="btn waves-effect waves-light" type="submit" name="action">submit
-                <i class="material-icons right"></i>
-            </button>
         </div>
+        <div class="row">
+            <div class="col s2">
+                <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+                    <i class="material-icons right">send</i>
+                </button>
+            </div>
+            
+            <div class="col s8"></div>
+            <div class="col s2">
+                <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
+            </div>
+        </div>
+
     </body>
+
 {% endblock %}
