@@ -21,13 +21,33 @@ class Spend(models.Model):
         default='food',
     )
     spend_money = models.IntegerField(default=0)
+    spend_card = models.ForeignKey('Card', on_delete=models.SET_NULL, blank=True, null=True)
     spend_date = models.DateField(default=datetime.date.today) 
     spend_memo = models.TextField(max_length=200, blank=True)
 
     def __str__(self):
         return self.spend_category
 
-    def publish(self):
-        self.published_date = timezone.now()
-        self.save()
+class Income(models.Model):
+    Income_Categories = [
+        ('salary', '給料'),
+        ('bonus', 'ボーナス'),
+        ('other', 'その他'),
+    ]
+    income_category = models.CharField(
+        max_length=15,
+        choices=Income_Categories,
+        default='salary',
+    )
+    income_money = models.IntegerField(default=0)
+    income_date = models.DateField(default=datetime.date.today) 
+    income_memo = models.TextField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.income_category
+
+class Card(models.Model):
+    card_name = models.CharField(max_length=10)
+    day_close = models.IntegerField(default=1)
+
     

@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.views import generic
-from .models import Spend
-from .forms import PaymentForm
+from .models import Spend, Income, Card
+from .forms import PaymentForm, IncomeForm
 from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
@@ -42,7 +42,18 @@ def PaymentCreate(request):
             return redirect('payment_create')
     else:
         form = PaymentForm
-        title = "支出入力フォーム"
+        title = "支出登録"
+        return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
+
+def IncomeCreate(request):
+    if request.method == "POST":
+        form = IncomeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('income_create')
+    else:
+        form = IncomeForm
+        title = "収入登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
 def payment_update(request, pk):
@@ -67,3 +78,19 @@ def payment_delete(request, pk):
     payment.delete()
     #return render(request, 'kakeibo/test.html', {'year': year, 'month': month})
     return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+
+def settlement(request, year, month):
+    card_withdrawal = 0
+    livingcost = 0
+    card_withdrawal_specialcost = 0
+    monthly_spend = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year).aggregate(models.Sum('spend_money'))
+    monthly_income = Income.objects.filter(income_date__month=month).filter(income_date__year=year).aggregate(model.Sum('income_money'))
+    balance = monthly_income - monthly_spend
+    
+    for card in Card.objects.all():
+        monthend = datetime(int(year), int(month), card.day_close)
+        startdate = monthend - relativedelta(months=2)
+        closedate = monthend - relativedelta(months=1)
+        card_withdrawal += Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).aggregate(models.Sum('spend_money'))
+        card_withdrawal_specialcost += Spend.objects.filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).filter(spend_category='special').aggregate(models.Sum('spend_money'))
+    
