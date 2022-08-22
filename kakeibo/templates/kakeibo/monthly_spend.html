@@ -14,6 +14,42 @@
 
 </header>
 
+<h3>収入</h3>
+<table class="striped">
+    <tr>
+      <th>日付</th>
+      <th>カテゴリ</th>
+      <th>金額</th>
+      <th>摘要</th>
+      <th>編集・削除</th>
+    </tr>
+    {% for income in monthly_incomelist %}
+  
+    <tr>
+      <td>{{ income.income_date }}</td>
+      <td>{{ income.get_income_category_display }}</td>
+      <td>{{ income.income_money }}</td>
+      <td>
+        {{ income.income_memo }}
+      </td>
+      <td>
+        <a href="{% url 'income_update' income.id %}" class="waves-effect btn-small">
+          <i class="material-icons">edit</i></a>
+        <a href="{% url 'income_delete' income.id %}" class="waves-effect btn-small waves-light pink lighten-1">
+          <i class="material-icons">delete</i></a>
+      </td>
+      <td></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="row" style="display: flex;">
+    <div class="col s2">
+      <a href="{% url 'income_create' %}" class="btn-floating btn-large waves-effect "><i class="material-icons">add</i></a>
+    </div>
+    <div class="col s8"></div>
+    <div class="col s2"></div>
+  </div>
+<h3>支出</h3>
 <table class="striped">
     <tr>
       <th>日付</th>
@@ -50,6 +86,7 @@
     <div class="col s2">
       <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
     </div>
-    
   </div>
+
+  
   {% endblock %}
