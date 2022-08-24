@@ -19,6 +19,35 @@ class IncomeForm(forms.ModelForm):
              'income_category': forms.Select(attrs={'style': 'display:initial'}),
         }
         templatename = 'forms.html'
+
+class SettlementForm(forms.Form):
+    livingcost = forms.IntegerField(
+        label='生活費',
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'月の生活費'})
+    )
+
+    saving = forms.IntegerField(
+        label='貯金',
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'貯金する金額'})
+    )
     
+    account_special = forms.IntegerField(
+        label='特別費口座',
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'特別費口座残高'})
+    )
+
+    account_living = forms.IntegerField(
+        label='生活費口座',
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'生活費口座残高'})
+    )
     
+    account_saving = forms.IntegerField(
+        label='貯金口座',
+        required=True,
+        widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'貯金口座残高'})
+    )
     
