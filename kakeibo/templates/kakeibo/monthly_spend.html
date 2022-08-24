@@ -11,6 +11,8 @@
   </div>
 </div>
   <h2>{{ year }}年{{ month }}月</h2>
+  <a href="{% url 'settlement' year month %}" class="btn waves-effect waves-light red">
+  <i class="material-icons left">star</i>決算！</a>
 
 </header>
 
@@ -55,6 +57,7 @@
       <th>日付</th>
       <th>カテゴリ</th>
       <th>金額</th>
+      <th>カード</th>
       <th>摘要</th>
       <th>編集・削除</th>
     </tr>
@@ -64,6 +67,11 @@
       <td>{{ payment.spend_date }}</td>
       <td>{{ payment.get_spend_category_display }}</td>
       <td>{{ payment.spend_money }}</td>
+      {% if not payment.spend_card %}
+      <td>{{ '' }}</td>
+      {% else %}
+      <td>{{ payment.spend_card }}</td>
+      {% endif %}
       <td>
         {{ payment.spend_memo }}
       </td>

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block main %}
+
+    <head>
+        <title>家計簿</title>
+    </head>
+<body>
+    <div>
+        <form action="" method="POST">{% csrf_token %}
+            {{ form.as_p }}
+        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+            <i class="material-icons right">send</i>
+        </button>
+        </form>
+   <div>
+    <p>card :{{ card_withdrawal }}</p>
+    <p>card special :{{ card_withdrawal_specialcost }} </p>
+    <p>monthly_income : {{ monthly_income }}</p>
+    <p>livingcost : {{ livingcost }}</p>
+    <p>saving : {{ saving }}</p>
+    <p>account_special_after : {{ account_special_after }}</p>
+    <p>account_living_after : {{ account_living_after }}</p>
+    <p>saving_after : {{ saving_after }}</p>
+   </div>
+
+    <div class="row">
+        <div class="col s2">
+        </div>
+        <div class="col s8">
+        </div>
+        <div class="col s2">
+            <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
+        </div>
+    </div>
+
+</body>
+{% endblock %}
