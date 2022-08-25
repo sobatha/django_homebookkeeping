@@ -49,5 +49,7 @@ class Income(models.Model):
 class Card(models.Model):
     card_name = models.CharField(max_length=10)
     day_close = models.IntegerField(default=1)
+    def __str__(self):
+        return self.card_name
 
     

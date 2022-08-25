@@ -99,7 +99,7 @@ def income_update(request, pk):
             year = income.income_date.year
             return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
     else:
-        form = IncomeForm(instance=payment)
+        form = IncomeForm(instance=income)
         title = "収入登録"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
@@ -136,7 +136,7 @@ def card_update(request, pk):
             form.save()
             return redirect('card_list')
     else:
-        form = CardForm(instance=payment)
+        form = CardForm(instance=card)
         title = "カード情報更新"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
@@ -160,8 +160,10 @@ def settlement(request, year, month):
         monthend = datetime(int(year), int(month), card.day_close)
         startdate = monthend - relativedelta(months=2)
         closedate = monthend - relativedelta(months=1)
-        card_withdrawal += Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).aggregate(models.Sum('spend_money'))
-        card_withdrawal_specialcost += Spend.objects.filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).filter(spend_category='special').aggregate(models.Sum('spend_money'))
+        card_withdrawal_query = Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate)
+        card_withdrawal_specialcost_query = Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).filter(spend_category='special')
+        card_withdrawal += sum([payment.spend_money for payment in card_withdrawal_query])
+        card_withdrawal_specialcost += sum([payment.spend_money for payment in card_withdrawal_specialcost_query])
     
     if request.method == "GET":
         form = SettlementForm()
