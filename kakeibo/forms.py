@@ -1,6 +1,6 @@
 from django import forms
 from django.views import generic
-from .models import Spend, Income
+from .models import Spend, Income, Card
 
 class PaymentForm(forms.ModelForm):
     class Meta:
@@ -18,6 +18,12 @@ class IncomeForm(forms.ModelForm):
         widgets = {
              'income_category': forms.Select(attrs={'style': 'display:initial'}),
         }
+        templatename = 'forms.html'
+
+class CardForm(forms.ModelForm):
+    class Meta:
+        model = Card
+        fields = ["card_name", "day_close"]
         templatename = 'forms.html'
 
 class SettlementForm(forms.Form):

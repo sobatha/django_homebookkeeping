@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block main %}
+<header>
+
+  <h2>カード一覧</h2>
+
+</header>
+
+
+<h3></h3>
+<table class="striped">
+    <tr>
+      <th>カード名</th>
+      <th>締め日</th>
+      <th>編集・削除</th>
+    </tr>
+    {% for card in object_list %}
+  
+    <tr>
+      <td>{{ card.card_name }}</td>
+      <td>{{ card.day_close }}</td>
+      <td>
+        <a href="{% url 'card_update' card.id %}" class="waves-effect btn-small">
+          <i class="material-icons">edit</i></a>
+        <a href="{% url 'card_delete' card.id %}" class="waves-effect btn-small waves-light pink lighten-1">
+          <i class="material-icons">delete</i></a>
+      </td>
+      <td></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="row" style="display: flex;">
+    <div class="col s2">
+      <a href="{% url 'card_create' %}" class="btn-floating btn-large waves-effect "><i class="material-icons">add</i></a>
+    </div>
+    <div class="col s8"></div>
+    <div class="col s2">
+      <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
+    </div>
+  </div>
+
+  
+  {% endblock %}

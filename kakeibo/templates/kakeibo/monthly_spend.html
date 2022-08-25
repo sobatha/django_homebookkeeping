@@ -11,10 +11,12 @@
   </div>
 </div>
   <h2>{{ year }}年{{ month }}月</h2>
+  <h3>収入{{ monthly_income }}円 - 支出{{ monthly_payment }}円 = {{ income_payment }}円</h3>
   <a href="{% url 'settlement' year month %}" class="btn waves-effect waves-light red">
   <i class="material-icons left">star</i>決算！</a>
 
 </header>
+
 
 <h3>収入</h3>
 <table class="striped">
