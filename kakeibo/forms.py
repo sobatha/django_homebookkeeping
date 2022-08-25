@@ -1,12 +1,14 @@
 from django import forms
 from django.views import generic
 from .models import Spend, Income, Card
+from django.contrib.admin import widgets 
 
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Spend
         fields = ["spend_category", "spend_date", "spend_money", "spend_memo", "spend_card"]
         widgets = {
+             'spend_date': forms.NumberInput(attrs={ "type": "date"}),
              'spend_category': forms.Select(attrs={'style': 'display:initial'}),
              'spend_card': forms.Select(attrs={'style': 'display:initial'}),
         }
@@ -17,6 +19,7 @@ class IncomeForm(forms.ModelForm):
         model = Income
         fields = ["income_category", "income_date", "income_money", "income_memo"]
         widgets = {
+             'income_date': forms.NumberInput(attrs={ "type": "date"}),
              'income_category': forms.Select(attrs={'style': 'display:initial'}),
         }
         templatename = 'forms.html'
