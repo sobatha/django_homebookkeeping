@@ -9,18 +9,18 @@
         <h3>{{ title }}</h3>
         </div>
     
-        <form action="{% url 'payment_update' pk %}" method="POST">{% csrf_token %}
+        <form action="" method="POST">{% csrf_token %}
                 {{ form.as_p }}
             
                 <div class="row">
-                    <div class="col s2">
+                    <div class="col s2" style="display: flex;">
                         <button class="btn waves-effect waves-light" type="submit" name="action">Submit
                             <i class="material-icons right">send</i>
                         </button>
                     </div>
                     
-                    <div class="col s8"></div>
-                    <div class="col s2">
+                    <div class="col s8" style="display: flex;"></div>
+                    <div class="col s2" style="display: flex;">
                         <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
                     </div>
                 </div>
