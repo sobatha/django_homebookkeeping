@@ -11,7 +11,7 @@
         
         <div class="row" style="display: flex;">
             <div class="col s4">
-                <a href="{% url 'month' year month %}" class="btn btn-large">
+                <a href="{% url 'month' year month %}" class="btn btn-large pink lighten-2">
                     <i class="material-icons left">date_range</i>今月の家計簿</a>
             </div>
             <div class="col s4">
@@ -22,11 +22,12 @@
                 <a href="{% url 'stock' %}" class="btn btn-large light-blue">資産一覧
                     <i class="material-icons left">account_balance</i></a>
             </div>
-            
-
+            <div class="col s4">
+            <a href="{% url 'card_list' %}" class="btn btn-large">カード一覧
+                <i class="material-icons left">credit_card</i></a>
+            </div>
         </div>
-        <a href="{% url 'card_list' %}" class="btn btn-large light-blue">カード一覧
-            <i class="material-icons left">credit_card</i></a>
+        
     </body>
 
 {% endblock %}

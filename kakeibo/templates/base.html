@@ -14,6 +14,17 @@
     
 </head>
 
+<nav>
+  <div class="nav-wrapper">
+    <a href="{% url 'index' %}" class="brand-logo">おうちの経理</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a href="{% url 'payment_create' %}"><i class="material-icons">edit</i></a></li>
+      <li><a href="{% url 'stock' %}"><i class="material-icons">account_balance</i></a></li>
+      <li><a href="/"><i class="material-icons">account_circle</i></a></li>
+    </ul>
+  </div>
+</nav>
+
 <body>
     <div class="container">
         {% block main %}
