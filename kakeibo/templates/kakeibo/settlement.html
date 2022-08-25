@@ -1,28 +1,92 @@
 {% extends 'base.html' %}
 {% block main %}
-
     <head>
         <title>家計簿</title>
     </head>
 <body>
+    <h3 class="header">
+        {{ year }}年 {{ month }}月　決算
+    </h3>
+
+<div class="row"><div class="col s12 m12">
     <div>
+        <h6>決算日時点での口座残高、来月の生活費予定額、貯金希望額を入れてください</h6>
         <form action="" method="POST">{% csrf_token %}
             {{ form.as_p }}
-        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-            <i class="material-icons right">send</i>
+        <button class="btn waves-effect waves-light red" type="submit" name="action">
+            <i class="material-icons left">star</i>決算！</a>
         </button>
         </form>
    <div>
-    <p>card :{{ card_withdrawal }}</p>
-    <p>card special :{{ card_withdrawal_specialcost }} </p>
-    <p>monthly_income : {{ monthly_income }}</p>
-    <p>livingcost : {{ livingcost }}</p>
-    <p>saving : {{ saving }}</p>
-    <p>account_special_after : {{ account_special_after }}</p>
-    <p>account_living_after : {{ account_living_after }}</p>
-    <p>saving_after : {{ saving_after }}</p>
-   </div>
+</div>
+<div><p></p></div>
+<div class="section scrollspy">
+    <h3>決算収支まとめ</h3>
+    <div class="row">
+        <div class="col s12 m10 offset-m1 xl10 offset-xl1">
+            
+            <table>
+                <thead>
+                <tr>
+                    <th>項目</th>
+                    <th>金額</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td>今月の収入</td>
+                        <td>{{ monthly_income }}</td>
+                    </tr>
+                    <tr>
+                        <td>カード引落額</td>
+                        <td>{{ card_withdrawal }}</td>
+                    </tr>
+                    <tr>
+                        <td>カード引落額</td>
+                        <td>{{ card_withdrawal }}</td>
+                    </tr>
+                    <tr>
+                        <td>　　内、特別費</td>
+                        <td>　{{ card_withdrawal_specialcost }}</td>
+                    </tr>
+                    <tr>
+                        <td>特別費積立額</td>
+                        <td>{{ available_for_special }}</td>
+                    </tr>
+                    <tr>
+                        <td>貯金額</td>
+                        <td>{{ saving }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div><p></p></div>
+    <thead>
+        <h4>決算後口座残高</h4>
+    </thead>
 
+    <div class="row">
+        <div class="col s12 m10 offset-m1 xl10 offset-xl1">
+            
+            <table>
+                <tbody>
+                    <tr>
+                        <td>生活費口座</td>
+                        <td>{{ account_living_after }}</td>
+                    </tr>
+                    <tr>
+                        <td>特別費口座</td>
+                        <td>{{ account_special_after }}</td>
+                    </tr>
+                    <tr>
+                        <td>貯金口座</td>
+                        <td>{{ saving_after }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+</div></div>
     <div class="row">
         <div class="col s2">
         </div>
