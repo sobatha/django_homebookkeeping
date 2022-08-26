@@ -18,7 +18,7 @@
     {% for account in object_list %}
   
     <tr>
-      <td>{{ account.closed_on }}</td>
+      <td>{{ account.closed_in_year }}年{{ account.closed_on_month }}月</td>
       <td>{{ account.get_account_name_display }}</td>
       <td>{{ account.amount |intcomma  }}</td>
     </tr>

@@ -204,15 +204,15 @@ def settlement(request, year, month):
         }
         
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month), account_name='saving',
+            closed_on_month=month, closed_in_year=year, account_name='saving',
             defaults={ "amount": saving_after }
             )
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month), account_name='living',
+            closed_on_month=month, closed_in_year=year, account_name='living',
             defaults={ "amount": account_living_after }
             )
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month), account_name='special', 
+            closed_on_month=month, closed_in_year=year, account_name='special', 
             defaults={"amount": account_special_after }
             )
         return render(request, 'kakeibo/settlement.html', context)

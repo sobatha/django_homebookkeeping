@@ -63,7 +63,8 @@ class Account(models.Model):
         choices=Account_Categories,
         default='living'
     )
-    closed_on = models.CharField(max_length=10)
+    closed_on_month = models.IntegerField(default=1)
+    closed_in_year = models.IntegerField(default=2022)
     amount = models.IntegerField(default=0)
 
     def __str__(self):
