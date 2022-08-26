@@ -52,4 +52,20 @@ class Card(models.Model):
     def __str__(self):
         return self.card_name
 
+class Account(models.Model):
+    Account_Categories = [
+        ('living', '生活費口座'),
+        ('special', '特別費口座'),
+        ('saving', '貯金口座'),
+    ]
+    account_name = models.CharField(
+        max_length=9,
+        choices=Account_Categories,
+        default='living'
+    )
+    closed_on = models.CharField(max_length=10)
+    amount = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.account_name
     
