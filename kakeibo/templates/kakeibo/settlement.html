@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block main %}
+{% load humanize %}
     <head>
         <title>家計簿</title>
     </head>
@@ -34,27 +35,27 @@
                 <tbody>
                     <tr>
                         <td>今月の収入</td>
-                        <td>{{ monthly_income }}</td>
+                        <td>{{ monthly_income |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>カード引落額</td>
-                        <td>{{ card_withdrawal }}</td>
+                        <td>{{ card_withdrawal |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>カード引落額</td>
-                        <td>{{ card_withdrawal }}</td>
+                        <td>{{ card_withdrawal |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>　　内、特別費</td>
-                        <td>　{{ card_withdrawal_specialcost }}</td>
+                        <td>　{{ card_withdrawal_specialcost |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>特別費積立額</td>
-                        <td>{{ available_for_special }}</td>
+                        <td>{{ available_for_special |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>貯金額</td>
-                        <td>{{ saving }}</td>
+                        <td>{{ saving |intcomma }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -72,15 +73,15 @@
                 <tbody>
                     <tr>
                         <td>生活費口座</td>
-                        <td>{{ account_living_after }}</td>
+                        <td>{{ account_living_after |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>特別費口座</td>
-                        <td>{{ account_special_after }}</td>
+                        <td>{{ account_special_after |intcomma }}</td>
                     </tr>
                     <tr>
                         <td>貯金口座</td>
-                        <td>{{ saving_after }}</td>
+                        <td>{{ saving_after |intcomma }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -89,6 +90,8 @@
 </div></div>
     <div class="row">
         <div class="col s2">
+            <a href="{% url 'assets' %}" class="btn waves-effect card-panel light-blue">資産一覧
+                <i class="material-icons left">account_balance</i></a>
         </div>
         <div class="col s8">
         </div>

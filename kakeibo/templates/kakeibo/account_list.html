@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block main %}
+{% load humanize %}
+<header>
+
+  <h2>口座残高一覧</h2>
+
+</header>
+
+
+<h3></h3>
+<table class="striped">
+    <tr>
+      <th>年月</th>
+      <th>口座</th>
+      <th>金額</th>
+    </tr>
+    {% for account in object_list %}
+  
+    <tr>
+      <td>{{ account.closed_on }}</td>
+      <td>{{ account.get_account_name_display }}</td>
+      <td>{{ account.amount |intcomma  }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <div class="row" style="display: flex;">
+    <div class="col s2"></div>
+    <div class="col s8"></div>
+    <div class="col s2">
+      <a href="{% url 'index' %}" class="btn waves-effect card-panel cyan darken-1" style="margin-left: auto;">戻る</a>
+    </div>
+  </div>
+
+  
+  {% endblock %}

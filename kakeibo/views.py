@@ -40,8 +40,10 @@ def month(request, year, month):
       'next_month': next_month, 'next_year': next_year, 'monthly_payment': monthly_payment, 'monthly_income': monthly_income,
       'income_payment': income_payment})
 
-def stock(request):
-    return HttpResponse('this is stock')
+class Assets_list(generic.ListView):
+    template_name= 'account_list.html'
+    model = Account
+    
 
 #支出の登録・更新・削除
 def PaymentCreate(request):
@@ -114,7 +116,7 @@ def income_delete(request, pk):
 
 #カードのリスト・登録・更新・削除
 class Card_list(generic.ListView):
-    templatename= 'card_list.html'
+    template_name= 'card_list.html'
     model = Card
 
 def card_create(request):
@@ -202,16 +204,16 @@ def settlement(request, year, month):
         }
         
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month),
-            defaults={"account_name": 'saving', "amount": saving_after }
+            closed_on=str(year)+str(month), account_name='saving',
+            defaults={ "amount": saving_after }
             )
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month),
-            defaults={"account_name": 'living', "amount": account_living_after }
+            closed_on=str(year)+str(month), account_name='living',
+            defaults={ "amount": account_living_after }
             )
         Account.objects.update_or_create(
-            closed_on=str(year)+str(month),
-            defaults={"account_name": 'special', "amount": account_special_after }
+            closed_on=str(year)+str(month), account_name='special', 
+            defaults={"amount": account_special_after }
             )
         return render(request, 'kakeibo/settlement.html', context)
     else:
