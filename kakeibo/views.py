@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.views import generic
 from django.db.models import Sum, Q
-from .models import Spend, Income, Card
+from .models import Spend, Income, Card, Account
 from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm
 from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
@@ -184,6 +184,7 @@ def settlement(request, year, month):
         available_for_special = available_for_saving - saving
         account_special_after= account_special - card_withdrawal_specialcost + available_for_special 
         saving_after = saving+account_saving 
+
         context = {
         'month' : month,
         'year' : year,
@@ -199,7 +200,19 @@ def settlement(request, year, month):
         'available_for_special': available_for_special,
         'form': form,
         }
-            
+        
+        Account.objects.update_or_create(
+            closed_on=str(year)+str(month),
+            defaults={"account_name": 'saving', "amount": saving_after }
+            )
+        Account.objects.update_or_create(
+            closed_on=str(year)+str(month),
+            defaults={"account_name": 'living', "amount": account_living_after }
+            )
+        Account.objects.update_or_create(
+            closed_on=str(year)+str(month),
+            defaults={"account_name": 'special', "amount": account_special_after }
+            )
         return render(request, 'kakeibo/settlement.html', context)
     else:
         return HttpResponse('不正なメソッドです', status=500)
