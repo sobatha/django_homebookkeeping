@@ -2,12 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Spend, Income, Card, Account
 from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm
 from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
+
 
 def index(request):
     today = datetime.now()
@@ -51,7 +54,7 @@ def PaymentCreate(request):
         form = PaymentForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('payment_create')
+            return redirect('kakeibo:payment_create')
     else:
         form = PaymentForm
         title = "支出登録"
@@ -71,13 +74,12 @@ def payment_update(request, pk):
         title = "支出入力フォーム"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
-
 def payment_delete(request, pk):
     payment = get_object_or_404(Spend, pk=pk)
     month = payment.spend_date.month
     year = payment.spend_date.year
     payment.delete()
-    return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+    return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
 
 #収入の登録・更新・削除
 def IncomeCreate(request):
@@ -85,7 +87,7 @@ def IncomeCreate(request):
         form = IncomeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('income_create')
+            return redirect('kakeibo:income_create')
     else:
         form = IncomeForm
         title = "収入登録"
@@ -99,12 +101,11 @@ def income_update(request, pk):
             form.save()
             month = income.income_date.month
             year = income.income_date.year
-            return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+            return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
     else:
         form = IncomeForm(instance=income)
         title = "収入登録"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
-
 
 def income_delete(request, pk):
     income = get_object_or_404(Income, pk=pk)
@@ -112,7 +113,7 @@ def income_delete(request, pk):
     year = income.income_date.year
     income.delete()
     #return render(request, 'kakeibo/test.html', {'year': year, 'month': month})
-    return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+    return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
 
 #カードのリスト・登録・更新・削除
 class Card_list(generic.ListView):
@@ -124,7 +125,7 @@ def card_create(request):
         form = CardForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('card_list')
+            return redirect('kakeibo:card_list')
     else:
         form = CardForm
         title = "カード入力フォーム"
@@ -136,17 +137,17 @@ def card_update(request, pk):
         form = CardForm(request.POST, instance=card)
         if form.is_valid():
             form.save()
-            return redirect('card_list')
+            return redirect('kakeibo:card_list')
     else:
         form = CardForm(instance=card)
         title = "カード情報更新"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
-
 def card_delete(request, pk):
     card = get_object_or_404(Card, pk=pk)
     card.delete()
-    return redirect('card_list')
+    return redirect('kakeibo:card_list')
+
 
 def settlement(request, year, month):
     card_withdrawal = 0
