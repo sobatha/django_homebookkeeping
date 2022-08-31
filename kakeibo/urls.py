@@ -4,6 +4,7 @@ from . import views
 app_name ='kakeibo'
 
 urlpatterns = [
+    path("top", views.top, name='top'),
     path("", views.index, name='index'),
     path("<int:year>/<int:month>/", views.month, name='month'),
     path("settlement/<int:year>/<int:month>", views.settlement, name='settlement'),

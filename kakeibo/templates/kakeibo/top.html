@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block main %}
+{% load static %}
+
+    <body>
+        <div style="display: flex;">
+        <h2></h2>
+        </div>
+        <h4 class="center-align" style="margin: 20px; display: flex;">おうちの家計簿とは？</h4>
+        
+        <h6 style="margin: 12px; display: flex;">「今月も思ったより使ってしまった...」</h6>
+        <h6 style="margin: 12px; display: flex;">「憧れのこれが欲しいけど、このお金って使っていいお金なのかな？」</h6>
+        <p style="margin: 20px; display: flex;">そのように思ったことはないですか？　おうちの家計簿は、簡単に収入・支出を登録するだけで適切な資産管理を行います。</p>
+        <img class="responsive-img" src="{% static "images/moneyless_girl.png" %}" width="50%" height="50%" />
+
+        <h4>使い方</h4>
+        <img class="responsive-img" src="{% static "images/life.png" %}" width="50%" height="50%" />
+        <h5>①アカウント登録</h5>
+        <h5>②生活費・特別費登録</h5>
+        <h5>③毎月の収入・支出登録</h5>
+        <h5>④決算</h5>
+
+        <h5>さあ、資産と楽しい特別な暮らしを守るのはこの家計簿とあなたです</h5>
+        <img class="responsive-img" src="{% static "images/facebook_cover_photo_2.png" %}" width="100%" height="100%" />
+        
+        <div class="row" style="margin-top: 20px; display: flex;" >
+            <div class="col s6">
+                <p>さあ、登録して使ってみましょう！
+                    <a href="{% url 'accounts:registration' %}" class="btn waves-effect card-panel  pink lighten-2" style="margin-left: 12px;">新規登録</a></p>
+                </div>
+            <div class="col s6">
+                    <p>アカウントを既にお持ちの方
+                    <a href="{% url 'accounts:login' %}" class="btn waves-light card-panel" style="margin-left: 12px;">ログイン</a></p>
+            </div>   
+        </div>
+        <h5 class="center-align" >この家計簿でお金を管理したら、”好き”にお金を遣ってたのしい暮らしを守ろう</h5>
+        <img class="responsive-img" src="{% static "images/same.png" %}" width="50%" height="50%" />
+
+        <h6>作者のTwitter</h6>
+        <a href="https://twitter.com/sobacha16">sobacha</a>
+        
+    </body>
+
+{% endblock %}
