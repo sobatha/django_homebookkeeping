@@ -12,6 +12,9 @@ from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
 
+def top(request):
+    return render(request, 'kakeibo/top.html')
+
 
 def index(request):
     today = datetime.now()
