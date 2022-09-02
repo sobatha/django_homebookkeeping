@@ -23,19 +23,19 @@ def budgetCreate(request):
         form = BudgetForm(request.POST)
         if form.is_valid():
             Budget.objects.update_or_create(
-                user=request.user.id,
+                user=request.user,
                 defaults={ "livingcost": form.cleaned_data.get('livingcost'), 
                 "specialcost": form.cleaned_data.get('specialcost')})
             messages.success(request, '登録ができました！')
             return redirect('kakeibo:index')
     else:
-        budget = Budget.objects.filter(user=request.user.id).first()
+        budget = Budget.objects.filter(user=request.user).first()
         if budget != None:
             initial_values = {"livingcost":budget.livingcost, "specialcost":budget.specialcost}
             form = BudgetForm(initial_values)
         else:
             form = BudgetForm
-        title = "予算登録"
+            title = "予算登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
 def index(request):
