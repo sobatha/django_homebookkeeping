@@ -76,4 +76,4 @@ class Account(models.Model):
 class Budget(models.Model):
     livingcost = models.IntegerField(default=0, blank=True, null=True)
     specialcost = models.IntegerField(default=0, blank=True, null=True)
- 
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
