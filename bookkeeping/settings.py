@@ -169,9 +169,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-LOGIN_URL = 'http://0.0.0.0:8000/accounts/login/'
-LOGOUT_REDIRECT_URL = 'http://0.0.0.0:8000/accounts/logout/success/'
-LOGIN_REDIRECT_URL = 'http://0.0.0.0:8000/kakeibo/'
+LOGIN_URL = 'https://mykakeibo.herokuapp.com/accounts/login/'
+LOGOUT_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/accounts/logout/success/'
+LOGIN_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/kakeibo/'
 
 
 # Enable WhiteNoise's GZip compression of static assets.
