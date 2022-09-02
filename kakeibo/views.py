@@ -2,12 +2,41 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.views import generic
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Q
-from .models import Spend, Income, Card, Account
-from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Spend, Income, Card, Account, Budget
+from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm, BudgetForm
 from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
+
+def top(request):
+    return render(request, 'kakeibo/top.html')
+
+
+#予算登録
+@login_required
+def budgetCreate(request):
+    if request.method == "POST":
+        form = BudgetForm(request.POST)
+        if form.is_valid():
+            Budget.objects.update_or_create(
+                user=request.user.id,
+                defaults={ "livingcost": form.cleaned_data.get('livingcost'), 
+                "specialcost": form.cleaned_data.get('specialcost')})
+            messages.success(request, '登録ができました！')
+            return redirect('kakeibo:index')
+    else:
+        budget = Budget.objects.filter(user=request.user.id).first()
+        if budget != None:
+            initial_values = {"livingcost":budget.livingcost, "specialcost":budget.specialcost}
+            form = BudgetForm(initial_values)
+        else:
+            form = BudgetForm
+        title = "予算登録"
+        return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
 def index(request):
     today = datetime.now()
@@ -15,9 +44,7 @@ def index(request):
     now_year = today.year
     return render(request, 'kakeibo/index.html', {'year': now_year, 'month': now_month,})
 
-def year(request, year):
-    return HttpResponse('this is year')
-
+@login_required
 def month(request, year, month):
     monthly_spendlist = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year).order_by('spend_category')
     monthly_incomelist = Income.objects.filter(income_date__month=month).filter(income_date__year=year).order_by('income_category')
@@ -40,23 +67,26 @@ def month(request, year, month):
       'next_month': next_month, 'next_year': next_year, 'monthly_payment': monthly_payment, 'monthly_income': monthly_income,
       'income_payment': income_payment})
 
-class Assets_list(generic.ListView):
+class Assets_list(LoginRequiredMixin, generic.ListView):
     template_name= 'account_list.html'
     model = Account
     
 
 #支出の登録・更新・削除
+@login_required
 def PaymentCreate(request):
     if request.method == "POST":
         form = PaymentForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('payment_create')
+            messages.success(request, '支出登録ができました！')
+            return redirect('kakeibo:payment_create')
     else:
         form = PaymentForm
         title = "支出登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
+@login_required
 def payment_update(request, pk):
     payment = get_object_or_404(Spend, pk=pk)
     if request.method == "POST":
@@ -65,32 +95,41 @@ def payment_update(request, pk):
             form.save()
             month = payment.spend_date.month
             year = payment.spend_date.year
+            messages.success(request, '支出更新ができました！')
             return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+        else:
+            messages.error(request, '入力が不正です')
     else:
         form = PaymentForm(instance=payment)
         title = "支出入力フォーム"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
-
+@login_required
 def payment_delete(request, pk):
     payment = get_object_or_404(Spend, pk=pk)
     month = payment.spend_date.month
     year = payment.spend_date.year
     payment.delete()
-    return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+    messages.success(request, '削除されました！')
+    return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
 
 #収入の登録・更新・削除
+@login_required
 def IncomeCreate(request):
     if request.method == "POST":
         form = IncomeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('income_create')
+            messages.success(request, '収入登録ができました！')
+            return redirect('kakeibo:income_create')
+        else:
+            messages.error(request, '入力が不正です')
     else:
         form = IncomeForm
         title = "収入登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
+@login_required
 def income_update(request, pk):
     income = get_object_or_404(Income, pk=pk)
     if request.method == "POST":
@@ -99,55 +138,69 @@ def income_update(request, pk):
             form.save()
             month = income.income_date.month
             year = income.income_date.year
-            return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+            messages.success(request, '登録ができました！')
+            return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
+        else:
+            messages.error(request, '入力が不正です')
     else:
         form = IncomeForm(instance=income)
         title = "収入登録"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
-
+@login_required
 def income_delete(request, pk):
     income = get_object_or_404(Income, pk=pk)
     month = income.income_date.month
     year = income.income_date.year
     income.delete()
-    #return render(request, 'kakeibo/test.html', {'year': year, 'month': month})
-    return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+    messages.success(request, '削除されました！')
+    return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
 
 #カードのリスト・登録・更新・削除
-class Card_list(generic.ListView):
+class Card_list(LoginRequiredMixin, generic.ListView):
     template_name= 'card_list.html'
     model = Card
 
+@login_required
 def card_create(request):
     if request.method == "POST":
         form = CardForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('card_list')
+            messages.success(request, '登録されました！')
+            return redirect('kakeibo:card_list')
+        else:
+            messages.error(request, '入力が不正です')
+
     else:
         form = CardForm
         title = "カード入力フォーム"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
+@login_required
 def card_update(request, pk):
     card = get_object_or_404(Card, pk=pk)
     if request.method == "POST":
         form = CardForm(request.POST, instance=card)
         if form.is_valid():
             form.save()
-            return redirect('card_list')
+            messages.success(request, '登録されました！')
+            return redirect('kakeibo:card_list')
+        else:
+            messages.error(request, '入力が不正です')
     else:
         form = CardForm(instance=card)
         title = "カード情報更新"
         return render(request, 'kakeibo/update.html', {'form':form, 'pk': pk, 'title':title})
 
-
+@login_required
 def card_delete(request, pk):
     card = get_object_or_404(Card, pk=pk)
     card.delete()
-    return redirect('card_list')
+    messages.success(request, '削除されました')
+    return redirect('kakeibo:card_list')
 
+@login_required
 def settlement(request, year, month):
     card_withdrawal = 0
     card_withdrawal_specialcost = 0
@@ -174,6 +227,7 @@ def settlement(request, year, month):
     elif request.method == "POST":    
         form = SettlementForm(request.POST)
         if not form.is_valid():
+            messages.error(request, '入力が不正です')
             return render(request, 'kakeibo/settlement.html',{'form': form})
 
         livingcost=form.cleaned_data.get('livingcost')
@@ -215,6 +269,7 @@ def settlement(request, year, month):
             closed_on_month=month, closed_in_year=year, account_name='special', 
             defaults={"amount": account_special_after }
             )
+        messages.success(request, '決算完了！お金を移動してね')
         return render(request, 'kakeibo/settlement.html', context)
     else:
         return HttpResponse('不正なメソッドです', status=500)

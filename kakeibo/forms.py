@@ -1,6 +1,6 @@
 from django import forms
 from django.views import generic
-from .models import Spend, Income, Card
+from .models import Spend, Income, Card, Budget
 from django.contrib.admin import widgets 
 
 class PaymentForm(forms.ModelForm):
@@ -61,3 +61,12 @@ class SettlementForm(forms.Form):
         widget=forms.TextInput(attrs={'class':'form', 'autocomplete':'off', 'placeholder':'貯金口座残高'})
     )
     
+class BudgetForm(forms.ModelForm):
+    class Meta:
+        model = Budget
+        fields = ["livingcost", "specialcost"]
+        labels = {
+             'livingcost': "生活費",
+             'specialcost': "特別費",
+        }
+        templatename = 'forms.html'
