@@ -30,12 +30,12 @@ def budgetCreate(request):
             return redirect('kakeibo:index')
     else:
         budget = Budget.objects.filter(user=request.user).first()
+        title = "予算登録"
         if budget != None:
             initial_values = {"livingcost":budget.livingcost, "specialcost":budget.specialcost}
             form = BudgetForm(initial_values)
         else:
             form = BudgetForm
-            title = "予算登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
 def index(request):
