@@ -26,6 +26,7 @@ class Spend(models.Model):
     spend_card = models.ForeignKey('Card', on_delete=models.SET_NULL, blank=True, null=True)
     spend_date = models.DateField(default=datetime.date.today) 
     spend_memo = models.TextField(max_length=200, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
  
     def __str__(self):
         return self.spend_category
@@ -44,6 +45,7 @@ class Income(models.Model):
     income_money = models.IntegerField(default=0)
     income_date = models.DateField(default=datetime.date.today) 
     income_memo = models.TextField(max_length=200, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.income_category
@@ -51,6 +53,7 @@ class Income(models.Model):
 class Card(models.Model):
     card_name = models.CharField(max_length=10)
     day_close = models.IntegerField(default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
  
     def __str__(self):
         return self.card_name
@@ -69,6 +72,7 @@ class Account(models.Model):
     closed_on_month = models.IntegerField(default=1)
     closed_in_year = models.IntegerField(default=2022)
     amount = models.IntegerField(default=0)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.account_name
