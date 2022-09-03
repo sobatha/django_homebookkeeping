@@ -33,7 +33,7 @@ if IS_HEROKU:
 else:
     ALLOWED_HOSTS = [""]
 
-DEBUG = False
+DEBUG = True
 # SECURITY WARNING: don't run with debug turned on in production!
 if not IS_HEROKU:
     DEBUG = True
