@@ -23,7 +23,7 @@ IS_HEROKU = "DYNO" in os.environ
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8tg=pd5r^idfo%&+-6+n%7p056a5v%==kj=x13s!!)-710k+ry'
+#SECRET_KEY = 'django-insecure-8tg=pd5r^idfo%&+-6+n%7p056a5v%==kj=x13s!!)-710k+ry'
 
 if 'SECRET_KEY' in os.environ:
     SECRET_KEY = os.environ["SECRET_KEY"]
@@ -31,9 +31,9 @@ if 'SECRET_KEY' in os.environ:
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
 else:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = [""]
 
-DEBUG = True
+DEBUG = False
 # SECURITY WARNING: don't run with debug turned on in production!
 if not IS_HEROKU:
     DEBUG = True
@@ -172,13 +172,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-LOGIN_URL = 'http://0.0.0.0:8000/accounts/login'
-#'https://mykakeibo.herokuapp.com/accounts/login/'
-LOGOUT_REDIRECT_URL = 'http://0.0.0.0:8000/accounts/logout/success'
-#'https://mykakeibo.herokuapp.com/accounts/logout/success/'
-LOGIN_REDIRECT_URL = 'http://0.0.0.0:8000/kakeibo'
-#'https://mykakeibo.herokuapp.com/kakeibo/'
-
+LOGIN_URL = 'https://mykakeibo.herokuapp.com/accounts/login/'
+#'http://0.0.0.0:8000/accounts/login'
+LOGOUT_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/accounts/logout/success/'
+#'http://0.0.0.0:8000/accounts/logout/success'
+LOGIN_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/kakeibo/'
+#'http://0.0.0.0:8000/kakeibo'
 
 # Enable WhiteNoise's GZip compression of static assets.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
