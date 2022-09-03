@@ -46,11 +46,13 @@ def index(request):
 
 @login_required
 def month(request, year, month):
-    monthly_spendlist = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year).order_by('spend_category')
-    monthly_incomelist = Income.objects.filter(income_date__month=month).filter(income_date__year=year).order_by('income_category')
+    spend_by_user = Spend.objects.filter(user=request.user)
+    income_by_user = Income.objects.filter(user=request.user)
+    monthly_spendlist = spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year).order_by('spend_category')
+    monthly_incomelist = income_by_user.filter(income_date__month=month).filter(income_date__year=year).order_by('income_category')
     monthly_payment_sum = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year)
     monthly_payment = sum([payment.spend_money for payment in monthly_payment_sum])
-    monthly_income_sum = Income.objects.filter(income_date__month=month).filter(income_date__year=year)
+    monthly_income_sum = income_by_user.filter(income_date__month=month).filter(income_date__year=year)
     monthly_income = sum([income.income_money for income in monthly_income_sum])
     income_payment = monthly_income - monthly_payment
     now_date = datetime(int(year), int(month), 1)
@@ -69,7 +71,11 @@ def month(request, year, month):
 
 class Assets_list(LoginRequiredMixin, generic.ListView):
     template_name= 'account_list.html'
-    model = Account
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Account.objects.filter(user=self.request.user)
+        return queryset    
     
 
 #支出の登録・更新・削除
