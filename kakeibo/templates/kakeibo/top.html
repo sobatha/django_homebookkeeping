@@ -3,48 +3,76 @@
 {% load static %}
 
     <body>
-        <h3 class="center-align" style="margin: 40px;">おうちの家計簿とは？</h3>
+        <h3 class="center-align" style="margin: 5%;">おうちの経理とは？</h3>
         
         <div style="display: flex;">    
             <img class="responsive-img center-align" src="{% static "images/moneyless_girl.png" %}" width="50%" height="50%" style="margin:auto"/>
         </div>
+        
 
-        <h6 style="margin: 12px; display: flex;"><span class="blue-text text-darken-2">「今月も思ったより使ってしまった...」</span></h6>
-        <h6 style="margin: 12px; display: flex;"><span class="blue-text text-darken-2">「憧れのこれが欲しいけど、このお金って使っていいお金なのかな？」</span></h6>
-        <p style="margin: 20px; display: flex;">そのように思ったことはないですか？　おうちの家計簿は、簡単に収入・支出を登録するだけで適切な資産管理を行います。</p>
+        <div style="display:flex;">
+            <h5 style="margin: 12px;"><span class="blue-text text-lighten-2">「今月も思ったより使ってしまった...」</span></h6>
+        </div>
+        <div style="display:flex;">
+            <h5 style="margin: 12px;"><span class="blue-text text-lighten-2">「これ欲しいけど、このお金って使っていいお金なのかな？」</span></h6>
+        </div>
+        <div style="display:flex;">
+            <h6 style="margin: 30px;">そのように思ったことはないですか？　おうちの経理は、簡単に収入・支出を登録するだけで適切な資産管理を行います。</p>
+        </div>
 
     
-        <h4 class="center-align" style="margin-top: 50px;">使い方</h4>
-    <div style="display: flex;">   
-        <img class="responsive-img" src="{% static "images/life.png" %}" width="50%" height="50%" style="margin:auto"/>
-    </div>
-        <h5>①アカウント登録</h5>
-        <h5>②生活費・特別費登録</h5>
-        <h5>③毎月の収入・支出登録</h5>
-        <h5>④決算</h5>
-    
+        <div style="display: flex; margin-top: 30px;"><h3 class="header", style="margin: auto;"><span class="blue-text text-accent-2">おうちの経理の使い方</span></h3></div>
+        <div style="display: flex;">   
+            <img class="responsive-img" src="{% static "images/life.png" %}" width="30%" height="30%" style="margin:auto"/>
+        </div>
+        <div>
+            <div style="margin: 80px;">
+                <ol>
+                    <h5  style="margin-top: 12px;">
+                        <li>アカウント登録
+                    </h5>
+                    <p>下記のリンクよりアカウント登録を行なってください。</p>
+                    </li>
+                    <h5  style="margin-top: 12px;">
+                        <li>生活費・特別費&カード登録
+                    </h5>
+                    <p>右上のバナー、財布のアイコンより毎月の生活費と特別費予算を入力してください。加えて、トップページからカード入力ページに移動し、カードの名前と締日を入力して下さい。</p>
+                    </li>
+                    <h5  style="margin-top: 12px;">
+                    <li style="margin-top: 8px;">毎月の収入・支出登録
+                    </h5>
+                    <p>家計簿から毎月の収入、支出を登録してください。カード支払いのときは使用カードも入力してください。</p>
+                    </li>
+                    <h5  style="margin-top: 12px;">
+                        <li style="margin-top: 8px;">決算
+                    </h5>
+                    <p>月末のあなたの好きなタイミングで、家計簿ページから決算ボタンを押して決算をしましょう。生活費の残額、収入額、予算、カード引き落とし額などから月末のあるべき口座残高などを自動計算します。</p>
+                    </li>
 
+                </ol>
+            </div>
+        </div>
         
-        <img class="responsive-img" src="{% static "images/facebook_cover_photo_2.png" %}" width="100%" height="100%" />
         
-        <div class="row" style="margin-top: 20px; display: flex;" >
-            <div class="col s6">
-                <p style="margin: auto;">さあ、登録して使ってみましょう！</p>
-                <a href="{% url 'accounts:registration' %}" class="btn waves-effect card-panel  pink lighten-2" style="margin: auto;">新規登録</a>
+    
+    <img class="responsive-img" src="{% static "images/facebook_cover_photo_2.png" %}" width="100%" height="100%" />
+    
+    <div style="margin-top: 20px; display: flex;" >
+            <div style="margin: auto;">
+                <p>さあ、登録して使ってみましょう！</p>
+                <a href="{% url 'accounts:registration' %}" class="btn waves-effect card-panel  pink lighten-2" style="margin-left: 12px;">新規登録</a>
                 </div>
-            <div class="col s6">
-                <p style="margin: auto;">アカウントを既にお持ちの方</p>
-                <a href="{% url 'accounts:login' %}" class="btn waves-light card-panel" style="margin: auto;">ログイン</a></p>
-            </div>   
+            <div style="margin: auto;">
+                <p>アカウントを既にお持ちの方</p>
+                <a href="{% url 'accounts:login' %}" class="btn waves-light card-panel" style="margin-left: 12px;">ログイン</a></p>
+            </div>  
         </div>
-        <h5 class="center-align" >おうちの家計簿でお金を管理して、”好き”にお金を遣ってたのしい暮らし</h5>
-        <div style="display: flex;">  
-        <img class="responsive-img" src="{% static "images/same.png" %}" width="30%" height="30%" style="margin:right"/>
-        </div>
-
-        <h6>作者のTwitter</h6>
-        <a href="https://twitter.com/sobacha16">sobacha</a>
+        <h5 class="center-align" style="margin: 8%;">おうちの経理でお金を管理して、”好き”にお金を遣ってたのしい暮らし</h5>
         
+    <div style="display: flex;">  
+        <img class="responsive-img" src="{% static "images/same.png" %}" width="30%" height="30%" style="margin:auto"/>
+    </div>
+    <h6 class="center-align", style="margin-bottom: 10%;">なにかご質問等あったらこちらへ　<a href="https://twitter.com/sobacha16">作者のTwitter</a></h6>
     </body>
 
 {% endblock %}

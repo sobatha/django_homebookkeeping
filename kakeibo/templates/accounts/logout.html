@@ -15,12 +15,12 @@
     {% endfor %}
 </div>
 
-<div class="row" style="margin-top: 8px; display: flex;" >
-    <div class="col s6">
+<div style="margin-top: 8px; display: flex;" >
+    <div style="margin:auto">
         <p>もう一度ログインしますか？
             <a href="{% url 'accounts:login' %}" class="btn waves-light card-panel" style="margin-left: 12px;">ログイン</a></p>
     </div>
-    <div class="col s6">
+    <div style="margin:auto">
         <p>アカウントをお持ちでない方
             <a href="{% url 'accounts:registration' %}" class="btn waves-effect card-panel  pink lighten-2" style="margin-left: 12px;">新規登録</a></p>
     </div>   
