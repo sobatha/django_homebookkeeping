@@ -50,7 +50,7 @@ def month(request, year, month):
     income_by_user = Income.objects.filter(user=request.user)
     monthly_spendlist = spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year).order_by('spend_category')
     monthly_incomelist = income_by_user.filter(income_date__month=month).filter(income_date__year=year).order_by('income_category')
-    monthly_payment_sum = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year)
+    monthly_payment_sum = spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year)
     monthly_payment = sum([payment.spend_money for payment in monthly_payment_sum])
     monthly_income_sum = income_by_user.filter(income_date__month=month).filter(income_date__year=year)
     monthly_income = sum([income.income_money for income in monthly_income_sum])
@@ -84,7 +84,9 @@ def PaymentCreate(request):
     if request.method == "POST":
         form = PaymentForm(request.POST)
         if form.is_valid():
-            form.save()
+            payment = form.save(commit=False)
+            payment.user = request.user
+            payment.save()
             messages.success(request, '支出登録ができました！')
             return redirect('kakeibo:payment_create')
     else:
@@ -125,7 +127,9 @@ def IncomeCreate(request):
     if request.method == "POST":
         form = IncomeForm(request.POST)
         if form.is_valid():
-            form.save()
+            income = form.save(commit=False)
+            income.user = request.user
+            income.save()
             messages.success(request, '収入登録ができました！')
             return redirect('kakeibo:income_create')
         else:
@@ -165,14 +169,19 @@ def income_delete(request, pk):
 #カードのリスト・登録・更新・削除
 class Card_list(LoginRequiredMixin, generic.ListView):
     template_name= 'card_list.html'
-    model = Card
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Card.objects.filter(user=self.request.user)
+        return queryset
 
 @login_required
 def card_create(request):
     if request.method == "POST":
         form = CardForm(request.POST)
         if form.is_valid():
-            form.save()
+            card = form.save(commit=False)
+            card.user = request.user
+            card.save()
             messages.success(request, '登録されました！')
             return redirect('kakeibo:card_list')
         else:
@@ -208,27 +217,64 @@ def card_delete(request, pk):
 
 @login_required
 def settlement(request, year, month):
+    spend_by_user = Spend.objects.filter(user=request.user)
+    income_by_user = Income.objects.filter(user=request.user)
+    budget_by_user = Budget.objects.filter(user=request.user)
     card_withdrawal = 0
     card_withdrawal_specialcost = 0
-    monthly_payment_sum = Spend.objects.filter(spend_date__month=month).filter(spend_date__year=year)
-    monthly_spend = sum([payment.spend_money for payment in monthly_payment_sum])
-    monthly_income_sum = Income.objects.filter(income_date__month=month).filter(income_date__year=year)
+    previous_card_withdrawal = 0
+    monthly_payment_sum = spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year)
+    monthly_spend_living = sum([payment.spend_money for payment in monthly_payment_sum.exclude(spend_category='special')])
+    monthly_spend_special = sum([payment.spend_money for payment in monthly_payment_sum.filter(spend_category='special')])
+    monthly_income_sum = income_by_user.filter(income_date__month=month).filter(income_date__year=year)
     monthly_income = sum([income.income_money for income in monthly_income_sum])
-    balance = monthly_income - monthly_spend
+    now_date = datetime(int(year), int(month), 1)
+    previous_date = now_date - relativedelta(months=1)
+    previous_month = previous_date.month
+    previous_year = previous_date.year
 
     #カード引き落とし額の算定
     for card in Card.objects.all():
         monthend = datetime(int(year), int(month), card.day_close)
         startdate = monthend - relativedelta(months=2)
         closedate = monthend - relativedelta(months=1)
-        card_withdrawal_query = Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate)
-        card_withdrawal_specialcost_query = Spend.objects.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).filter(spend_category='special')
+        previous_startdate = monthend - relativedelta(months=4)
+        previous_closedate = monthend - relativedelta(months=3)
+        card_withdrawal_query = spend_by_user.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate)
+        card_withdrawal_specialcost_query = spend_by_user.filter(spend_card_id=card.id).filter(spend_date__gt=startdate).filter(spend_date__lte=closedate).filter(spend_category='special')
+        previous_card_withdrawal_query = spend_by_user.filter(spend_card_id=card.id).filter(spend_date__gt=previous_startdate).filter(spend_date__lte=previous_closedate)
         card_withdrawal += sum([payment.spend_money for payment in card_withdrawal_query])
         card_withdrawal_specialcost += sum([payment.spend_money for payment in card_withdrawal_specialcost_query])
+        previous_card_withdrawal += sum([payment.spend_money for payment in previous_card_withdrawal_query])
     
     if request.method == "GET":
-        form = SettlementForm()
-        return render(request, 'kakeibo/settlement.html', {'form': form, 'month' : month, 'year' : year,})
+        previous_assets_by_user = Account.objects.filter(user=request.user).filter(
+            closed_on_month=previous_month).filter(closed_in_year=previous_year)
+        
+        initial_values = {
+            'livingcost': sum([budget.livingcost for budget in budget_by_user]),
+            'saving': monthly_income - sum([budget.livingcost for budget in budget_by_user]) - sum([budget.specialcost for budget in budget_by_user]),
+            'account_special': sum([assets.amount for assets in previous_assets_by_user.filter(
+                account_name='special')]) - monthly_spend_special,
+            'account_living': sum([assets.amount for assets in previous_assets_by_user.filter(
+                account_name='living')]) - monthly_spend_living - previous_card_withdrawal,
+            'account_saving': sum([assets.amount for assets in previous_assets_by_user.filter(
+                account_name='saving')]),
+        }
+
+        context = {
+        'month' : month,
+        'year' : year,
+        'card_withdrawal': card_withdrawal,
+        'card_withdrawal_specialcost' : card_withdrawal_specialcost,
+        'monthly_income': monthly_income,
+        'account_living_after': '',
+        'account_special_after': '',
+        'saving_after': '',
+        'available_for_special': '',
+        'form': SettlementForm(initial_values),
+        }
+        
 
     elif request.method == "POST":    
         form = SettlementForm(request.POST)
@@ -264,19 +310,17 @@ def settlement(request, year, month):
         }
         
         Account.objects.update_or_create(
-            closed_on_month=month, closed_in_year=year, account_name='saving',
+            closed_on_month=month, closed_in_year=year, account_name='saving', user=request.user,
             defaults={ "amount": saving_after }
             )
         Account.objects.update_or_create(
-            closed_on_month=month, closed_in_year=year, account_name='living',
+            closed_on_month=month, closed_in_year=year, account_name='living',user=request.user,
             defaults={ "amount": account_living_after }
             )
         Account.objects.update_or_create(
-            closed_on_month=month, closed_in_year=year, account_name='special', 
+            closed_on_month=month, closed_in_year=year, account_name='special', user=request.user,
             defaults={"amount": account_special_after }
             )
         messages.success(request, '決算完了！お金を移動してね')
-        return render(request, 'kakeibo/settlement.html', context)
-    else:
-        return HttpResponse('不正なメソッドです', status=500)
+    return render(request, 'kakeibo/settlement.html', context)
 
