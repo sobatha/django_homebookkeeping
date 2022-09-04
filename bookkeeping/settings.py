@@ -36,6 +36,13 @@ if IS_HEROKU:
 else:
     ALLOWED_HOSTS = []
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+    }
+}
+
 try:
     # 存在する場合、ローカルの設定読み込み
     from .local_settings import *
