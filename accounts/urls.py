@@ -17,7 +17,8 @@ urlpatterns =[
     path('registration/', CreateView.as_view(
         template_name='accounts/register.html',
         form_class=UserCreationForm,
-        success_url='http://0.0.0.0:8000/kakeibo/'
+        #success_url='http://0.0.0.0:8000/kakeibo/',
+        success_url='https://mykakeibo.herokuapp.com/kakeibo/',
     ), name='registration')
 ]
       
