@@ -23,17 +23,25 @@ IS_HEROKU = "DYNO" in os.environ
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8tg=pd5r^idfo%&+-6+n%7p056a5v%==kj=x13s!!)-710k+ry'
+#SECRET_KEY = 'django-insecure-8tg=pd5r^idfo%&+-6+n%7p056a5v%==kj=x13s!!)-710k+ry'
 
 if 'SECRET_KEY' in os.environ:
     SECRET_KEY = os.environ["SECRET_KEY"]
 
 if IS_HEROKU:
     ALLOWED_HOSTS = ["*"]
+    LOGIN_URL = 'https://mykakeibo.herokuapp.com/accounts/login/'
+    LOGOUT_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/accounts/logout/success/'
+    LOGIN_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/kakeibo/'
 else:
-    ALLOWED_HOSTS = ["*"]
+    ALLOWED_HOSTS = []
 
-DEBUG = True
+try:
+    # 存在する場合、ローカルの設定読み込み
+    from .local_settings import *
+except ImportError:
+    pass
+
 # SECURITY WARNING: don't run with debug turned on in production!
 if not IS_HEROKU:
     DEBUG = True
@@ -89,16 +97,6 @@ WSGI_APPLICATION = 'bookkeeping.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
-    }
-}
 
 MAX_CONN_AGE = 600
 
@@ -161,7 +159,7 @@ if "CI" in os.environ:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = "static/"
 
 # Default primary key field type
@@ -171,13 +169,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-LOGIN_URL = 'https://mykakeibo.herokuapp.com/accounts/login/'
-#LOGIN_URL ='http://0.0.0.0:8000/accounts/login'
-LOGOUT_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/accounts/logout/success/'
-#LOGOUT_REDIRECT_URL ='http://0.0.0.0:8000/accounts/logout/success'
-LOGIN_REDIRECT_URL = 'https://mykakeibo.herokuapp.com/kakeibo/'
-#LOGIN_REDIRECT_URL = 'http://0.0.0.0:8000/kakeibo'
 
 # Enable WhiteNoise's GZip compression of static assets.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
