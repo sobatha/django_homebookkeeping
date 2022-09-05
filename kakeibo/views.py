@@ -90,7 +90,8 @@ def PaymentCreate(request):
             messages.success(request, '支出登録ができました！')
             return redirect('kakeibo:payment_create')
     else:
-        form = PaymentForm
+        form = PaymentForm()
+        form.fields['spend_card'].queryset = Card.objects.filter(user=request.user)
         title = "支出登録"
         return render(request, 'kakeibo/form.html', {'form':form, 'title':title})
 
