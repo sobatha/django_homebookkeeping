@@ -4,6 +4,7 @@ from .models import Spend, Income, Card, Budget
 from django.contrib.admin import widgets 
 
 class PaymentForm(forms.ModelForm):
+    spend_card = forms.ModelChoiceField(queryset=Card.objects.all(), widget=forms.Select(attrs={'style': 'display:initial'})),
     class Meta:
         model = Spend
         fields = ["spend_category", "spend_date", "spend_money", "spend_memo", "spend_card"]
