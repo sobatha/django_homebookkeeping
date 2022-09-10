@@ -20,7 +20,7 @@
   <div class="nav-wrapper blue">
     <a href="{% url 'kakeibo:index' %}" class="brand-logo"><img src="{% static "images/logo_transparent.png" %}" alt="logo" width="70" height="70"></a>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a href="{% url 'kakeibo:payment_create' %}"><i class="material-icons">edit</i></a></li>
+      <li><a href="{% url 'kakeibo:month' now_year now_month %}"><i class="material-icons">date_range</i></a></li>
       <li><a href="{% url 'kakeibo:assets' %}"><i class="material-icons">account_balance</i></a></li>
       <li><a href="{% url 'kakeibo:budget' %}"><i class="material-icons">account_balance_wallet</i></a></li>
       <li><a href="{% url 'accounts:logout' %}"><i class="material-icons">exit_to_app</i></a></li>
