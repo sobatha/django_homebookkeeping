@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django import forms
 from django.views import generic
 from django.contrib.auth.decorators import login_required
@@ -98,6 +98,9 @@ def PaymentCreate(request):
 @login_required
 def payment_update(request, pk):
     payment = get_object_or_404(Spend, pk=pk)
+    if request.user != payment.user:
+        raise Http404  
+
     if request.method == "POST":
         form = PaymentForm(request.POST, instance=payment)
         if form.is_valid():
@@ -105,7 +108,7 @@ def payment_update(request, pk):
             month = payment.spend_date.month
             year = payment.spend_date.year
             messages.success(request, '支出更新ができました！')
-            return HttpResponseRedirect(reverse('month', kwargs={'year': year, 'month': month}))
+            return HttpResponseRedirect(reverse('kakeibo:month', kwargs={'year': year, 'month': month}))
         else:
             messages.error(request, '入力が不正です')
     else:
@@ -143,6 +146,9 @@ def IncomeCreate(request):
 @login_required
 def income_update(request, pk):
     income = get_object_or_404(Income, pk=pk)
+    if request.user != income.user:
+        raise Http404  
+
     if request.method == "POST":
         form = IncomeForm(request.POST, instance=income)
         if form.is_valid():
