@@ -295,7 +295,7 @@ def settlement(request, year, month):
         account_living=form.cleaned_data.get('account_living')
         account_saving=form.cleaned_data.get('account_saving')
         account_living_after=livingcost+card_withdrawal_specialcost
-        available_for_saving=monthly_income-account_living_after
+        available_for_saving=monthly_income-account_living_after + account_living
         available_for_special = available_for_saving - saving
         account_special_after= account_special - card_withdrawal_specialcost + available_for_special 
         saving_after = saving+account_saving 
