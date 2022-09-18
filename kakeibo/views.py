@@ -59,18 +59,11 @@ def index(request):
 
 @login_required
 def month(request, year, month):
-    spend_by_user = Spend.objects.filter(user=request.user)
     income_by_user = Income.objects.filter(user=request.user)
-    monthly_spendlist = (
-        spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year).order_by("spend_category")
-    )
-    monthly_incomelist = (
-        income_by_user.filter(income_date__month=month).filter(income_date__year=year).order_by("income_category")
-    )
-    monthly_payment_sum = spend_by_user.filter(spend_date__month=month).filter(spend_date__year=year)
-    monthly_payment = sum([payment.spend_money for payment in monthly_payment_sum])
-    monthly_income_sum = income_by_user.filter(income_date__month=month).filter(income_date__year=year)
-    monthly_income = sum([income.income_money for income in monthly_income_sum])
+    monthly_spendlist = Spend.objects.spend_thismonth(year, month).filter(user=request.user).order_by("spend_category")
+    monthly_incomelist = Income.objects.earn_thismonth(year, month).filter(user=request.user).order_by("income_category")
+    monthly_payment = sum([payment.spend_money for payment in monthly_spendlist])
+    monthly_income = sum([income.income_money for income in monthly_incomelist])
     income_payment = monthly_income - monthly_payment
     now_date = datetime(int(year), int(month), 1)
     previous_date = now_date - relativedelta(months=1)
