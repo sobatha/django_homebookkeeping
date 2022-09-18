@@ -5,6 +5,14 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime
 
+class CommonManager(models.Manager):
+
+    def spend_thismonth(self, year, month):
+        return self.get_queryset().filter(spend_date__month=month).filter(spend_date__year=year)
+
+    def earn_thismonth(self, year, month):
+        return self.get_queryset().filter(income_date__month=month).filter(income_date__year=year)
+
 
 class Spend(models.Model):
     Spend_Categorys = [
@@ -18,6 +26,7 @@ class Spend(models.Model):
         ("dailyitem", "日用品"),
         ("special", "特別費・旅行費"),
     ]
+
     spend_category = models.CharField(
         max_length=15,
         choices=Spend_Categorys,
@@ -28,6 +37,8 @@ class Spend(models.Model):
     spend_date = models.DateField(default=datetime.date.today)
     spend_memo = models.TextField(max_length=200, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+
+    objects = CommonManager()
 
     def __str__(self):
         return self.spend_category
@@ -48,6 +59,8 @@ class Income(models.Model):
     income_date = models.DateField(default=datetime.date.today)
     income_memo = models.TextField(max_length=200, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+
+    objects = CommonManager()
 
     def __str__(self):
         return self.income_category
