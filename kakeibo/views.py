@@ -91,15 +91,23 @@ def month(request, year, month):
         },
     )
 
+@login_required
+def Assetslist(request):
+    queryset = Account.objects.filter(user=request.user).order_by('-id')[:10]
+    month=[]
+    money=[]
+    account_name=[]
+    for account in queryset:
+        month.append(account.closed_in_year+account.closed_on_month)
+        money.append(account.amount)
+        account_name.append(account.account_name)
 
-class Assets_list(LoginRequiredMixin, generic.ListView):
-    template_name = "account_list.html"
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = Account.objects.filter(user=self.request.user)
-        return queryset
-
+    return render(request, 'kakeibo/account_list.html',{
+        'account_name':account_name,
+        'month':month,
+        'money':money,
+        'object_list':queryset,
+    })
 
 # 支出の登録・更新・削除
 @login_required
