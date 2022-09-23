@@ -13,52 +13,29 @@
 </header>
 <body>
 <canvas id="myBarChart"></canvas>
-<script>
+<script type="text/javascript">
   var ctx = document.getElementById("myBarChart")
   var myBarChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: {{ account_name|safe }},
-      datasets: 
-      [{
-          label: {{ month|safe }},
-          data: {{ money|safe }},
-        }],
+      labels: {{ months|safe }},
+        datasets: [{
+            label: '生活費口座',
+            data: {{ account_money.living|safe }}
+        }, {
+            label: '特別費口座',
+            data: {{ account_money.special|safe }},
+        }, {
+            label: '貯金口座',
+            data: {{ account_money.saving|safe }},
+        }, {
+            label: '全資産合計',
+            data: {{ account_money.total|safe }},
+        }]
     },
-    options: {
-      responsive: true,
-      title: {
-        display: true,
-        text: '口座残高'
-      },
-    }
   });
 </script>
 
-<script type="text/javascript">
-var ctx = document.getElementById("myPieChart");
-  var myPieChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: "{{ piedata.category }}",
-      datasets: [{
-          backgroundColor: [
-              "#BB5179",
-              "#FAFF67",
-              "#58A27C",
-              "#3C00FF"
-          ],
-          data: [38, 31, 21, 10]
-      }]
-    },
-    options: {
-      title: {
-        display: true,
-        text: '学習内訳'
-      }
-    }
-  });
-</script>
 
 <div style="display: flex;">
 <table class="striped">

@@ -93,19 +93,25 @@ def month(request, year, month):
 
 @login_required
 def Assetslist(request):
-    queryset = Account.objects.filter(user=request.user).order_by('-id')[:10]
-    month=[]
-    money=[]
-    account_name=[]
+    queryset = Account.objects.filter(user=request.user).order_by('-id')
+    account_money={'total':[]}
+    months = []
+    temp = -1
+    i = 0
     for account in queryset:
-        month.append(account.closed_in_year+account.closed_on_month)
-        money.append(account.amount)
-        account_name.append(account.account_name)
+        if i%3==0:
+            months.append(str(account.closed_in_year)+'年'+str(account.closed_on_month)+'月')
+            temp+=1
+            account_money['total'].append(0)
+        if not account.account_name in account_money:
+            account_money[account.account_name] = []
+        account_money[account.account_name].append(account.amount)
+        account_money['total'][temp] += account.amount
+        i+=1
 
     return render(request, 'kakeibo/account_list.html',{
-        'account_name':account_name,
-        'month':month,
-        'money':money,
+        'account_money':account_money,
+        'months':months,
         'object_list':queryset,
     })
 
