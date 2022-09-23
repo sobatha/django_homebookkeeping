@@ -1,14 +1,43 @@
 {% extends 'base.html' %}
 {% block main %}
 {% load humanize %}
+
+<head>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<script type="text/javascript" src="https://github.com/nagix/chartjs-plugin-colorschemes/releases/download/v0.2.0/chartjs-plugin-colorschemes.min.js"></script>
+</head>
+
 <header>
-
   <h2>口座残高一覧</h2>
-
 </header>
+<body>
+<canvas id="myBarChart"></canvas>
+<script type="text/javascript">
+  var ctx = document.getElementById("myBarChart")
+  var myBarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ months|safe }},
+        datasets: [{
+            label: '生活費口座',
+            data: {{ account_money.living|safe }}
+        }, {
+            label: '特別費口座',
+            data: {{ account_money.special|safe }},
+        }, {
+            label: '貯金口座',
+            data: {{ account_money.saving|safe }},
+        }, {
+            label: '全資産合計',
+            data: {{ account_money.total|safe }},
+        }]
+    },
+  });
+</script>
 
 
-<h3></h3>
+<div style="display: flex;">
 <table class="striped">
     <tr>
       <th>年月</th>
@@ -24,6 +53,8 @@
     </tr>
     {% endfor %}
   </table>
+</div>
+
   <div class="row" style="display: flex;">
     <div class="col s2"></div>
     <div class="col s8"></div>
@@ -32,5 +63,5 @@
     </div>
   </div>
 
-  
+</body>
   {% endblock %}
