@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Q
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .users import UserUpdateView, UserCreateView
+from .user import UserUpdateView, UserCreateView
 from .models import Spend, Income, Card, Account, Budget
 from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm, BudgetForm
 from django.urls import reverse, reverse_lazy
@@ -19,21 +19,14 @@ def top(request):
 
 
 # 予算登録
-@login_required
-def budgetCreate(request):
-    if request.method == "POST":
-        form = BudgetForm(request.POST)
-        if form.is_valid():
-            Budget.objects.update_or_create(
-                user=request.user,
-                defaults={
-                    "livingcost": form.cleaned_data.get("livingcost"),
-                    "specialcost": form.cleaned_data.get("specialcost"),
-                },
-            )
-            messages.success(request, "登録ができました！")
-            return redirect("kakeibo:index")
-    else:
+class BudgetCreateView(UserCreateView):
+    model = Budget
+    template_name = "kakeibo/form.html"
+    form = BudgetForm
+    success_message = "登録ができました！"
+    fields = ['livingcost', 'specialcost']
+
+    def get(self, request):
         budget = Budget.objects.filter(user=request.user).first()
         title = "予算登録"
         if budget != None:
@@ -41,7 +34,7 @@ def budgetCreate(request):
             form = BudgetForm(initial_values)
         else:
             form = BudgetForm
-        return render(request, "kakeibo/form.html", {"form": form, "title": title})
+        return render(request, self.template_name, {"form": form, "title": title})
 
 
 def index(request):

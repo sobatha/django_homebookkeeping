@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from . import views
 
 app_name = "kakeibo"
@@ -6,7 +6,7 @@ app_name = "kakeibo"
 urlpatterns = [
     path("top", views.top, name="top"),
     path("", views.index, name="index"),
-    path("budget/", views.budgetCreate, name="budget"),
+    path("budget/", views.BudgetCreateView.as_view(success_url=reverse_lazy('kakeibo:index')), name="budget"),
     path("<int:year>/<int:month>/", views.month, name="month"),
     path("settlement/<int:year>/<int:month>", views.settlement, name="settlement"),
     path("assets/", views.Assetslist, name="assets"),
