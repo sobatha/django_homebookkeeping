@@ -18,6 +18,20 @@ def top(request):
     return render(request, "kakeibo/top.html")
 
 
+def index(request):
+    today = datetime.now()
+    now_month = today.month
+    now_year = today.year
+    return render(
+        request,
+        "kakeibo/index.html",
+        {
+            "year": now_year,
+            "month": now_month,
+        },
+    )
+
+
 # 予算登録
 class BudgetCreateView(UserCreateView):
     model = Budget
@@ -35,20 +49,6 @@ class BudgetCreateView(UserCreateView):
         else:
             form = BudgetForm
         return render(request, self.template_name, {"form": form, "title": title})
-
-
-def index(request):
-    today = datetime.now()
-    now_month = today.month
-    now_year = today.year
-    return render(
-        request,
-        "kakeibo/index.html",
-        {
-            "year": now_year,
-            "month": now_month,
-        },
-    )
 
 
 @login_required
@@ -93,6 +93,7 @@ def Assetslist(request):
     temp = -1
     i = 0
     for account in queryset:
+        #口座が３つなので３つおきに年月、トータル額を追加
         if i%3==0:
             months.append(str(account.closed_in_year)+'年'+str(account.closed_on_month)+'月')
             temp+=1
@@ -110,21 +111,18 @@ def Assetslist(request):
     })
 
 # 支出の登録・更新・削除
-@login_required
-def PaymentCreate(request):
-    if request.method == "POST":
-        form = PaymentForm(request.POST)
-        if form.is_valid():
-            payment = form.save(commit=False)
-            payment.user = request.user
-            payment.save()
-            messages.success(request, "支出登録ができました！")
-            return redirect("kakeibo:payment_create")
-    else:
-        form = PaymentForm()
+class PaymentCreate(UserCreateView):
+    model = Spend
+    template_name = "kakeibo/form.html"
+    form = PaymentForm
+    success_message = "支出登録ができました！"
+    fields = ['spend_category', 'spend_money', 'spend_card', 'spend_date', 'spend_memo']
+
+    def get(self, request):
+        form = self.form()
         form.fields["spend_card"].queryset = Card.objects.filter(user=request.user)
         title = "支出登録"
-        return render(request, "kakeibo/form.html", {"form": form, "title": title})
+        return render(request, self.template_name, {"form": form, "title": title})
 
 
 @login_required
