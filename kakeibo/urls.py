@@ -10,7 +10,7 @@ urlpatterns = [
     path("<int:year>/<int:month>/", views.month, name="month"),
     path("settlement/<int:year>/<int:month>", views.settlement, name="settlement"),
     path("assets/", views.Assetslist, name="assets"),
-    path("payment_forms/", views.PaymentCreate, name="payment_create"),
+    path("payment_forms/", views.PaymentCreate.as_view(success_url=reverse_lazy('kakeibo:payment_create')), name="payment_create"),
     path("income_forms/", views.IncomeCreate, name="income_create"),
     path("payment_delete/<int:pk>", views.payment_delete, name="payment_delete"),
     path("payment_update/<int:pk>", views.payment_update, name="payment_update"),
