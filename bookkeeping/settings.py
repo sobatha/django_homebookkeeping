@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "kakeibo",
     "accounts",
     "django.contrib.humanize",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
