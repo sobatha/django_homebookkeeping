@@ -12,6 +12,8 @@ from .forms import PaymentForm, IncomeForm, SettlementForm, CardForm, BudgetForm
 from django.urls import reverse, reverse_lazy
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
+from rest_framework import viewsets, filters
+from .serializer import SpendSerializer, IncomeSperializer
 
 
 def top(request):
@@ -400,3 +402,12 @@ def settlement(request, year, month):
         )
         messages.success(request, "決算完了！お金を移動してね")
     return render(request, "kakeibo/settlement.html", context)
+
+
+class SpendViewSet(viewsets.ModelViewSet):
+    queryset = Spend.objects.all()
+    serializer_class = SpendSerializer
+
+class IncomeViewSet(viewsets.ModelViewSet):
+    queryset = Income.objects.all()
+    serializer_class = IncomeSperializer

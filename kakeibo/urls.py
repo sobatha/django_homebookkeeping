@@ -1,5 +1,6 @@
 from django.urls import path, reverse_lazy
 from . import views
+from rest_framework import routers
 
 app_name = "kakeibo"
 
@@ -21,3 +22,7 @@ urlpatterns = [
     path("card_delete/<int:pk>", views.card_delete, name="card_delete"),
     path("card_update/<int:pk>", views.card_update, name="card_update"),
 ]
+
+router = routers.DefaultRouter()
+router.register(r'spend', views.SpendViewSet)
+router.register(r'income', views.IncomeViewSet)
